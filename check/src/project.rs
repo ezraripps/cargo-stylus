@@ -15,7 +15,7 @@ use std::{
     fs,
     io::Read,
     path::{Path, PathBuf},
-    process,
+    process::{self, Stdio},
 };
 use tiny_keccak::{Hasher, Keccak};
 
@@ -169,6 +169,7 @@ pub fn hash_files(source_file_patterns: Vec<String>, cfg: BuildConfig) -> Result
     }
     cmd.arg("--version");
     let output = cmd
+        .stderr(Stdio::inherit())
         .output()
         .map_err(|e| eyre!("failed to execute cargo command: {e}"))?;
     if !output.status.success() {
